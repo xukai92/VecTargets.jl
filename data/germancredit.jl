@@ -1,11 +1,13 @@
+# You have to make sure RCall is correctly installed to run this script.
 using DrWatson
-
-@quickactivate "Research"
+@quickactivate
 
 using RCall
 
-germancredit_path = datadir("germancredit.txt")
-    
+# Load data from TXT file
+germancredit_path = projectdir("germancredit.txt")
+
+# Pre-processing
 # Ref: https://github.com/pierrejacob/debiasedhmc/blob/master/inst/logistic/model.R
 design_matrix, response = 
 rcopy(R"""
@@ -28,4 +30,4 @@ design_matrix <- cbind(design_matrix, scale(interaction_terms))
 list(design_matrix, response)
 """)
 
-wsave(datadir("germancredit.bson"), @dict(design_matrix, response))
+wsave(projectdir("germancredit.bson"), @dict(design_matrix, response))
