@@ -6,7 +6,6 @@ include("bnormal.jl")
 using StatsFuns: logsumexp, logistic
 using ReverseDiff: ReverseDiff, DiffResults
 
-
 import Distributions: rand, logpdf, pdf
 
 function get_∂ℓπ∂θ_reversediff(ℓπ, θ::AbstractVector)
@@ -41,26 +40,6 @@ function get_∂ℓπ∂θ_reversediff(ℓπ, θ::AbstractMatrix)
     end
     return ∂ℓπ∂θ
 end
-
-# function get_∂ℓπ∂θ_reversediff(ℓπ, θ::AbstractMatrix)
-#     d, n = size(θ)
-#     grad = similar(θ)
-#     inputs = (θ,)
-#     f_tape = ReverseDiff.JacobianTape(ℓπ, inputs)
-#     compiled_f_tape = ReverseDiff.compile(f_tape)
-#     results = similar.(inputs, size(θ, 2))
-#     all_results = DiffResults.JacobianResult.(results, inputs)
-#     # cfg = ReverseDiff.JacobianConfig(inputs)    # we may use this in the future; see https://github.com/JuliaDiff/ReverseDiff.jl/blob/master/examples/gradient.jl#L43
-#     function ∂ℓπ∂θ(θ::AbstractMatrix)
-#         ReverseDiff.jacobian!(all_results, compiled_f_tape, (θ,))
-#         jacob = DiffResults.jacobian(first(all_results))
-#         @inbounds @simd for i in 1:n
-#             grad[:,i] = jacob[i,(i-1)*d+1:i*d]
-#         end
-#         return DiffResults.value(first(all_results)), grad
-#     end
-#     return ∂ℓπ∂θ
-# end
 
 export get_∂ℓπ∂θ_reversediff
 
