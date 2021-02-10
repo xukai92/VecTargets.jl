@@ -1,3 +1,5 @@
+using Test
+
 @testset "All Tests" begin
     include("ad.jl")
     include("visualizations.jl")
