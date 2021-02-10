@@ -5,12 +5,13 @@ This package contains common target distributions in Bayesian inference with vec
 ## A minimal example
 
 ```julia
-target = Banana()
-x = randn(dim(target))
+target = Banana()               # the banana distribution
+
+x = randn(dim(target))          # size(x) is (2,)
 @info logpdf(target, x)         # -433.1
 @info logpdf_grad(target, x)    # (-433.1, [646.1, 129.8])
-batch = 2
-x = hcat(x, randn(dim(target), batch))
+
+x = hcat(x, x)                  # size(x) is (2, 2)
 @info logpdf(target, x)         # [-433.1, -433.1]
 @info logpdf_grad(target, x)    # ([-433.1, -433.1], [646.1 646.1; 129.8 129.8])
 ```
