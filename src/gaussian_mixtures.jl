@@ -15,11 +15,11 @@ OneDimGaussianMixtures() = GaussianMixtures(
 TwoDimGaussianMixtures() = GaussianMixtures(
     [0.25, 0.4, 0.35],
     BroadcastedNormalStd(
-        [-1.0 0.0 1.0; -1.0 0.0 1.0], [0.25]
+        [-1.0 0.0 1.0; -2.0 0.0 2.0], [0.25]
     )
 )
 
-function rand(gms::GaussianMixtures, n::Int=1)
+function rand(rng::AbstractRNG, gms::GaussianMixtures, n::Int=1)
     @unpack mixing, components = gms
     components = [
         BroadcastedNormalStd(mean(components)[:,i], std(components)) for i in 1:length(mixing)
@@ -32,6 +32,8 @@ function rand(gms::GaussianMixtures, n::Int=1)
     end
     return cat(samples...; dims=ndims(samples[1])+1)
 end
+
+rand(gms::GaussianMixtures, args...) = rand(GLOBAL_RNG, gms, args...)
 
 function _logpdf(gms::GaussianMixtures, x)
     @unpack mixing, components = gms
@@ -53,11 +55,4 @@ function logpdf(gms::GaussianMixtures, x::AbstractMatrix)
     return _logpdf(gms, x)
 end
 
-function get_target(gms::GaussianMixtures)
-    logdensity(x) = logpdf(gms, x)
-    return (
-        dim = size(gms.components.m, 1), 
-        logdensity = logdensity, 
-        get_grad = x -> get_∂ℓπ∂θ_reversediff(logdensity, x),
-    )
-end
+dim(gms::GaussianMixtures) = size(gms.components.m, 1)

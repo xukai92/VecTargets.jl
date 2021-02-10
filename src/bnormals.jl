@@ -1,3 +1,7 @@
+# Broadcasted Normals that works on GPUs
+
+using Random: AbstractRNG, rand!, randn!
+
 function _rsimilar(rng::AbstractRNG, f!::Function, x::AbstractArray, dims::Int...)
     u = similar(x, size(x)..., dims...)
     f!(rng, u)
@@ -49,7 +53,6 @@ end
 
 Broadcast.broadcastable(bd::BroadcastedNormalStd) = Ref(bd)
 
-Normal(m::AbstractArray, s::AbstractArray) = BroadcastedNormalStd(m, s)
 NormalStd(m::AbstractArray, s::AbstractArray) = BroadcastedNormalStd(m, s)
 
    std(bd::BroadcastedNormalStd) = bd.s
