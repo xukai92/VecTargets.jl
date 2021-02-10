@@ -1,4 +1,4 @@
-# VecTargets.jl
+# VecTargets.jl: Vectorized (Sampling) Targets
 
 This package contains common target distributions in Bayesian inference with vectorized log-density and gradient evaluation supported.
 
