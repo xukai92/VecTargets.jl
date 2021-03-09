@@ -10,7 +10,7 @@ function LogisticRegression(datadir::String, lambda::AbstractFloat)
 end
 
 LogisticRegression(lambda::AbstractFloat) = 
-    LogisticRegression(joinpath(splitdir(@__FILE__)[1:end-2]..., "data"), lambda)
+    LogisticRegression(joinpath(splitdir(splitdir(pathof(@__MODULE__))[1])[1], "data"), lambda)
 
 dim(lr::LogisticRegression) = size(lr.X, 1) + 2
 
