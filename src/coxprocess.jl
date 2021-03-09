@@ -28,7 +28,7 @@ dim(lgcpp::LogGaussianCoxPointProcess) = lgcpp.dimension
 function loglikelihood(lgcpp::LogGaussianCoxPointProcess, x::AbstractVector)
     cumsum = 0
     for i in 1:length(x)
-        cumsum += x[i] * counts[i] - lgcpp.area * exp(x[i])
+        cumsum += x[i] * lgcpp.counts[i] - lgcpp.area * exp(x[i])
     end
     return cumsum
 end
