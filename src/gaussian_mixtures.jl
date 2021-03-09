@@ -3,20 +3,18 @@ struct GaussianMixtures{M, C}
     components::C
 end
 
+function GaussianMixtures(p::AbstractVector, m::AbstractArray, s::AbstractArray)
+    return GaussianMixtures(p, BroadcastedNormalStd(m, s))
+end
+
 # Default 1D Gaussian mixtures
 OneDimGaussianMixtures() = GaussianMixtures(
-    [0.25, 0.4, 0.35],
-    BroadcastedNormalStd(
-        [-1.0 0.0 1.0], [0.25]
-    )
+    [0.25, 0.4, 0.35], [-1.0 0.0 1.0], [0.25]
 )
 
 # Default 2D Gaussian mixtures
 TwoDimGaussianMixtures() = GaussianMixtures(
-    [0.25, 0.4, 0.35],
-    BroadcastedNormalStd(
-        [-1.0 0.0 1.0; -2.0 0.0 2.0], [0.25]
-    )
+    [0.25, 0.4, 0.35], [-1.0 0.0 1.0; -2.0 0.0 2.0], [0.25]
 )
 
 function rand(rng::AbstractRNG, gms::GaussianMixtures, n::Int=1)
@@ -26,7 +24,7 @@ function rand(rng::AbstractRNG, gms::GaussianMixtures, n::Int=1)
     ]
     samples = []
     for _ in 1:n
-        i = rand(Categorical(mixing))
+        i = rand(rng, Categorical(mixing))
         g = components[i]
         push!(samples, rand(g))
     end
