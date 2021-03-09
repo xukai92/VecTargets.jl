@@ -21,7 +21,7 @@ function LogGaussianCoxPointProcess(datadir::String, ngrid::Int)
 end
 
 LogGaussianCoxPointProcess(ngrid::Int) = 
-    LogGaussianCoxPointProcess(joinpath(splitdir(pathof(@__MODULE__))[1:end-2]..., "data"), ngrid)
+    LogGaussianCoxPointProcess(joinpath(splitdir(@__FILE__)[1:end-2]..., "data"), ngrid)
 
 dim(lgcpp::LogGaussianCoxPointProcess) = lgcpp.dimension
 
