@@ -11,6 +11,9 @@ import Distributions: dim, rand, logpdf, pdf
 include("banana.jl")
 export Banana
 
+include("funnel.jl")
+export Funnel
+
 include("high_dim_gaussian.jl")
 export HighDimGaussian
 
@@ -26,6 +29,6 @@ export LogisticRegression
 include("coxprocess.jl")
 export LogGaussianCoxPointProcess
 
-export dim, rand, logpdf, pdf, logpdf_grad, gen_logpdf_grad
+export dim, rand, logpdf, pdf, logpdf_grad, gen_logpdf_grad, logpdf_hess, gen_logpdf_hess
 
 end # module
