@@ -1,7 +1,7 @@
 name = "VecTargets"
 uuid = "8a639fad-7908-4fe4-8003-906e9297f002"
 authors = ["Kai Xu <xukai921110@gmail.com>"]
-version = "0.1.0"
+version = "0.2.0"
 
 [deps]
 BSON = "fbb218c0-5317-5bc6-957e-2ee96dd4b1f0"
