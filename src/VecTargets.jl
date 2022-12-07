@@ -29,6 +29,7 @@ export LogisticRegression
 include("coxprocess.jl")
 export LogGaussianCoxPointProcess
 
-export dim, rand, logpdf, pdf, logpdf_grad, gen_logpdf_grad, logpdf_hess, gen_logpdf_hess
+export dim, rand, logpdf, pdf
+export logpdf_grad, gen_logpdf_grad, logpdf_hess, gen_logpdf_hess, logpdf_Hvp, gen_logpdf_Hvp
 
 end # module

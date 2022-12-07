@@ -20,15 +20,16 @@ struct Batch <: VariateForm end
 
 const ContinuousBatchDistribution = Distribution{Batch,Continuous}
 
-abstract type AbstractBroadcastedNormal{T} <: ContinuousBatchDistribution end
+abstract type AbstractBroadcastedNormal <: ContinuousBatchDistribution end
 
 function rand(rng::AbstractRNG, bd::AbstractBroadcastedNormal, dims::Int...)
     return bd.m .+ std(bd) .* randnsimilar(rng, bd.m, dims...)
 end
 
-function logpdf(bd::AbstractBroadcastedNormal{T}, x) where {T}
+function logpdf(bd::AbstractBroadcastedNormal, x)
     diff = x .- bd.m
-    return -(log(2 * T(pi)) .+ logvar(bd) .+ diff .* diff ./ var(bd)) / 2
+    # NOTE Removed type stable conversion for π to make ReverseDiff happy
+    return -(log(2 * π) .+ logvar(bd) .+ diff .* diff ./ var(bd)) / 2
 end
 
 mean(bd::AbstractBroadcastedNormal) = bd.m
@@ -36,7 +37,7 @@ mode(bd::AbstractBroadcastedNormal) = bd.m
 
 _vlogv(bd::AbstractBroadcastedNormal) = (var(bd), logvar(bd))
 
-function kldiv(bd1::AbstractBroadcastedNormal{T}, bd2::AbstractBroadcastedNormal{T}) where {T}
+function kldiv(bd1::AbstractBroadcastedNormal, bd2::AbstractBroadcastedNormal)
     diff = bd2.m .- bd1.m
     v1, logv1 = _vlogv(bd1)
     v2, logv2 = _vlogv(bd2)
@@ -46,7 +47,7 @@ end
 """
 Broadcasted Normal distribution with standard deviation.
 """
-struct BroadcastedNormalStd{T<:Number,Tm<:AbstractArray{T},Ts<:AbstractArray{T}} <: AbstractBroadcastedNormal{T}
+struct BroadcastedNormalStd{Tm<:AbstractArray,Ts<:AbstractArray} <: AbstractBroadcastedNormal
     m::Tm
     s::Ts
 end
@@ -62,7 +63,7 @@ logvar(bd::BroadcastedNormalStd) = 2log.(bd.s)
 """
 Broadcasted Normal distribution with variance.
 """
-struct BroadcastedNormalVar{T<:Number,Tm<:AbstractArray{T},Tv<:AbstractArray{T}} <: AbstractBroadcastedNormal{T}
+struct BroadcastedNormalVar{Tm<:AbstractArray,Tv<:AbstractArray} <: AbstractBroadcastedNormal
     m::Tm
     v::Tv
 end
@@ -78,7 +79,7 @@ logvar(bd::BroadcastedNormalVar) = log.(bd.v)
 """
 Broadcasted Normal distribution with log standard deviation.
 """
-struct BroadcastedNormalLogStd{T<:Number,Tm<:AbstractArray{T},Ts<:AbstractArray{T}} <: AbstractBroadcastedNormal{T}
+struct BroadcastedNormalLogStd{Tm<:AbstractArray,Ts<:AbstractArray} <: AbstractBroadcastedNormal
        m::Tm    # mean
     logs::Ts    # log std
 end
@@ -100,7 +101,7 @@ end
 """
 Broadcasted Normal distribution with log variance.
 """
-struct BroadcastedNormalLogVar{T<:Number,Tm<:AbstractArray{T},Tv<:AbstractArray{T}} <: AbstractBroadcastedNormal{T}
+struct BroadcastedNormalLogVar{Tm<:AbstractArray,Tv<:AbstractArray} <: AbstractBroadcastedNormal
        m::Tm    # mean
     logv::Tv    # log std
 end
