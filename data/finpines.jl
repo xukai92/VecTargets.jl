@@ -6,6 +6,7 @@ using RCall
 
 # Load data from R's spatstat package
 R"""
+# install.packages("spatstat")
 library(spatstat)
 data(finpines)
 x <- finpines$x
@@ -29,7 +30,7 @@ sigmasq = 1.91
 mu = log(126) - 0.5 * sigmasq
 beta = 1 / 33
 
-for ngrid in [16, 32, 64]
+for ngrid in [8, 16, 32, 64]
 
     grid = range(0, 1; length=(ngrid + 1))
     dimension = ngrid^2

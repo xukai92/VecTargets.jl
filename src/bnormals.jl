@@ -26,6 +26,16 @@ function rand(rng::AbstractRNG, bd::AbstractBroadcastedNormal, dims::Int...)
     return bd.m .+ std(bd) .* randnsimilar(rng, bd.m, dims...)
 end
 
+function _logpdf_normal_std(x, m, s)
+    diff = x - m
+    return -(log(2π) + 2log(s) + diff * diff / s^2) / 2
+end
+
+function _logpdf_normal_var(x, m, v)
+    diff = x - m
+    return -(log(2π) + log(v) + diff * diff / v) / 2
+end
+
 function logpdf(bd::AbstractBroadcastedNormal, x)
     diff = x .- bd.m
     # NOTE Removed type stable conversion for π to make ReverseDiff happy

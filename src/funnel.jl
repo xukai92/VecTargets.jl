@@ -4,11 +4,6 @@ end
 
 dim(funnel::Funnel) = funnel.dim
 
-function _logpdf_normal(x, m, s)
-    diff = x .- m
-    return -(log(2pi) .+ 2log(s) .+ diff .* diff ./ s.^2) / 2
-end
-
 function _logpdf(::Funnel, θ::AbstractVecOrMat)
     nu, x = θ[1,:], θ[2:end,:]
     
@@ -20,12 +15,16 @@ function _logpdf(::Funnel, θ::AbstractVecOrMat)
     
 #     return lp
     
-    diff = nu
-    s = 3
-    lp1 = -(log(2pi) .+ 2log.(s) .+ diff .* diff ./ s.^2) / 2
-    diff = x
-    s = exp.(nu ./ 2)
-    lp2 = -(log(2pi) .+ 2log.(s) .+ diff .* diff ./ s.^2) / 2
+    # diff = nu
+    # s = 3
+    # lp1 = -(log(2pi) .+ 2log.(s) .+ diff .* diff ./ s.^2) / 2
+    lp1 = _logpdf_normal_std.(nu, 0, 3)
+
+    # diff = x
+    # s = exp.(nu ./ 2)
+    # lp2 = -(log(2pi) .+ 2log.(s) .+ diff .* diff ./ s.^2) / 2
+    lp2 = _logpdf_normal_std.(x, 0, exp.(nu ./ 2))
+
     return lp1 + dropdims(sum(lp2; dims=1); dims=1)
 end
 
