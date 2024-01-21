@@ -1,3 +1,10 @@
+using MultivariateStats: MultivariateStats
+
+function reduce_dim_by_pca(design_matrix, target_dim::Int)
+    M = fit(MultivariateStats.PCA, design_matrix'; maxoutdim=target_dim)
+    return Matrix(MultivariateStats.predict(M, design_matrix')')
+end
+
 struct LogisticRegression{TX, Ty, T}
     X::TX
     y::Ty
@@ -9,7 +16,10 @@ function LogisticRegression(
     num_obs::Int=1_000, num_latent::Int=300
 )
     @unpack design_matrix, response = BSON.load(joinpath(datadir, "germancredit.bson"))
-    return LogisticRegression(design_matrix[1:num_obs,1:num_latent], Bool.(response[1:num_obs]), lambda)
+    design_matrix = size(design_matrix, 2) == num_latent ? design_matrix :
+        reduce_dim_by_pca(design_matrix, num_latent)
+        # design_matrix[:,1:num_latent]
+    return LogisticRegression(design_matrix[1:num_obs,:], Bool.(response[1:num_obs]), lambda)
 end
 
 LogisticRegression(lambda::AbstractFloat; kwargs...) = 
